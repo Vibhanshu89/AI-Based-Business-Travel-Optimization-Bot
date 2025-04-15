@@ -72,14 +72,14 @@
             width: 450px;
             margin: 0 auto;
             background: rgba(0, 0, 0, 0.9);
-            padding: 0;  /* Removed padding */
+            padding: 0;
             border-radius: 20px;
             box-shadow: 0 0 40px rgba(255, 215, 0, 0.5);
             position: relative;
             z-index: 1;
             transition: transform 0.3s ease;
             height: 650px;
-            overflow: hidden;  /* Hide overflow */
+            overflow: hidden;
         }
 
         .chatbot-container:hover {
@@ -107,7 +107,7 @@
             }
         }
 
-        /* Add a subtle gradient overlay */
+        /* Add a subtle gradient overlay at the top */
         .chatbot-container::before {
             content: '';
             position: absolute;
@@ -121,14 +121,15 @@
             border-radius: 20px 20px 0 0;
         }
 
+        /* Cover the "Built on Zapier" label at the bottom */
         .chatbot-container::after {
             content: '';
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 50px;
-            background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+            height: 40px;  /* Is height ko adjust kar sakte hain label ke size ke hisaab se */
+            background: rgba(0, 0, 0, 0.9);  /* Background se match karta solid color */
             pointer-events: none;
             z-index: 2;
             border-radius: 0 0 20px 20px;
