@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Travel Optimizer - Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            color: #fff;
+            min-height: 100vh;
+            position: relative;
+            background: linear-gradient(135deg, #1a0b2e, #2e1a47);
+            overflow-y: auto;
+        }
+
+        #customCursor {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background: radial-gradient(circle, #ffd700, #ff4500);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+            transition: transform 0.2s;
+        }
+
+        video#bgVideo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            filter: brightness(0.7) contrast(1.3);
+        }
+
+        header {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.75);
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: neonGlow 1.5s infinite alternate;
+        }
+
+        @keyframes neonGlow {
+            0% { text-shadow: 0 0 10px #ffd700, 0 0 20px #ff4500; }
+            100% { text-shadow: 0 0 20px #ffd700, 0 0 40px #ff4500; }
+        }
+
+        .results {
+            max-width: 90%;
+            width: 800px;
+            margin: 2rem auto;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.5);
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .results:hover {
+            transform: scale(1.02);
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-family: 'Orbitron', sans-serif;
+            color: #ffd700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: #ff4500;
+            margin-bottom: 1rem;
+        }
+
+        .result-item {
+            padding: 1.2rem;
+            margin: 0.8rem 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e0e0e0;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .result-item:hover {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 69, 0, 0.2));
+            transform: translateX(15px);
+            box-shadow: 0 0 20px rgba(255, 69, 0, 0.6);
+            color: #fff;
+        }
+
+        .price {
+            color: #ffd700;
+            font-weight: 700;
+        }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 2rem; }
+            .results { padding: 1.5rem; width: 95%; }
+        }
+    </style>
+</head>
+<body>
+    <video id="bgVideo" autoplay muted loop>
+        <source src="https://cdn.pixabay.com/video/2023/10/23/187158-876314614_large.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div id="customCursor"></div>
+    <header>
+        <h1>Optimized Travel Results</h1>
+    </header>
+    <section class="results">
+        <h2>Your Travel Options</h2>
+        <div id="flightResults"></div>
+        <div id="hotelResults"></div>
+    </section>
+    <script>
+        const cursor = document.getElementById('customCursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = `${e.clientX - 12.5}px`;
+            cursor.style.top = `${e.clientY - 12.5}px`;
+        });
+
+        const travelData = JSON.parse(localStorage.getItem('travelData'));
+
+        async function fetchFlightData(departure, destination, departDate, returnDate) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve([
+                        { id: 1, airline: "AirX", price: "₹20,000", departure: departDate, return: returnDate, details: { duration: "5h 30m", stops: "Non-stop", rating: "4.2/5" } },
+                        { id: 2, airline: "FlyHigh", price: "₹22,500", departure: departDate, return: returnDate, details: { duration: "6h", stops: "1 Stop", rating: "4.0/5" } },
+                        { id: 3, airline: "SkyJet", price: "₹19,800", departure: departDate, return: returnDate, details: { duration: "5h 45m", stops: "Non-stop", rating: "4.5/5" } },
+                        { id: 4, airline: "IndiGo", price: "₹21,000", departure: departDate, return: returnDate, details: { duration: "6h 15m", stops: "1 Stop", rating: "4.3/5" } },
+                        { id: 5, airline: "Vistara", price: "₹23,000", departure: departDate, return: returnDate, details: { duration: "5h 20m", stops: "Non-stop", rating: "4.7/5" } }
+                    ]);
+                }, 1000);
+            });
+        }
+
+        async function fetchHotelData(destination, checkIn, checkOut) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve([
+                        { id: 1, name: "Hotel Elite", price: "₹9,500/night", checkIn, checkOut, details: { rooms: "2 Bedrooms", rating: "4.5/5", image: "https://images.unsplash.com/photo-1618773928121-c3222925c79f" } },
+                        { id: 2, name: "Business Inn", price: "₹12,000/night", checkIn, checkOut, details: { rooms: "1 Suite", rating: "4.2/5", image: "https://images.unsplash.com/photo-1566073771259-6a8506099945" } },
+                        { id: 3, name: "Grand Palace", price: "₹10,800/night", checkIn, checkOut, details: { rooms: "3 Bedrooms", rating: "4.8/5", image: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9" } },
+                        { id: 4, name: "City View", price: "₹8,900/night", checkIn, checkOut, details: { rooms: "1 Bedroom", rating: "4.0/5", image: "https://images.unsplash.com/photo-1542314831-8fcea1db6b98" } },
+                        { id: 5, name: "Sky Residency", price: "₹11,500/night", checkIn, checkOut, details: { rooms: "2 Suites", rating: "4.6/5", image: "https://images.unsplash.com/photo-1596436889106-be35e843f974" } }
+                    ]);
+                }, 1000);
+            });
+        }
+
+        async function displayResults() {
+            const flights = await fetchFlightData(travelData.departure, travelData.destination, travelData.departDate, travelData.returnDate);
+            const hotels = await fetchHotelData(travelData.destination, travelData.departDate, travelData.returnDate);
+
+            const flightResults = document.getElementById('flightResults');
+            const hotelResults = document.getElementById('hotelResults');
+
+            flightResults.innerHTML = '<h3>Cheapest Flights</h3>' + 
+                flights.map(f => `<div class="result-item" onclick="showDetails('flight', ${f.id})">${f.airline}: <span class="price">${f.price}</span> (Depart: ${f.departure}, Return: ${f.return})</div>`).join('');
+
+            hotelResults.innerHTML = '<h3>Cheapest Hotels</h3>' + 
+                hotels.map(h => `<div class="result-item" onclick="showDetails('hotel', ${h.id})">${h.name}: <span class="price">${h.price}</span> (Check-in: ${h.checkIn}, Check-out: ${h.checkOut})</div>`).join('');
+
+            localStorage.setItem('flights', JSON.stringify(flights));
+            localStorage.setItem('hotels', JSON.stringify(hotels));
+        }
+
+        function showDetails(type, id) {
+            localStorage.setItem('selectedType', type);
+            localStorage.setItem('selectedId', id);
+            window.location.href = 'details.html';
+        }
+
+        displayResults();
+    </script>
+</body>
+</html>
